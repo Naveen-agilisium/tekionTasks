@@ -1,5 +1,5 @@
 import React, { useState,useMemo } from 'react'
-import { useTable,useSortBy,usePagination } from 'react-table'
+import { useTable,useSortBy,usePagination,useGlobalFilter } from 'react-table'
 import datas from './data.json'
 import {AiFillHeart,AiFillDelete,AiOutlineClose} from 'react-icons/ai'
 import {BiCaretLeft,BiCaretRight} from 'react-icons/bi'
@@ -100,18 +100,26 @@ const ReactTable = () => {
             pageIndex: 0,
           },
         },
+        useGlobalFilter,
         useSortBy,
-        usePagination
+        usePagination,
+        
       );
-    const { getTableProps,getTableBodyProps,headerGroups,page,prepareRow,canPreviousPage,canNextPage,pageOptions,nextPage,previousPage,setPageSize,state: { pageIndex, pageSize }, } = table;
+    const { getTableProps,getTableBodyProps,headerGroups,page,prepareRow,canPreviousPage,canNextPage,pageOptions,nextPage,previousPage,state,setPageSize,state: { pageIndex, pageSize },setGlobalFilter } = table;
 
     const handleRowClick = (row) => {
         setSingleData(row.original)
       };
+
+      const { globalFilter } = state;
     return (
     <>
+     
     <div className='container flex mx-auto gap-3 py-10'>
         <div className='w-3/4'>
+        <div className='mb-2'>
+        <input type='text' className='w-[250px] p-3 rounded-full outline-none ' value={globalFilter || ''} onChange={e=>setGlobalFilter(e.target.value)}placeholder='Search Filter'/>
+      </div>
         <table className='w-full mb-3 border-b-2' {...getTableProps()}>
         <thead>
           {headerGroups.map((headerGroup) => (
@@ -174,7 +182,7 @@ const ReactTable = () => {
         
       </div>
       </div>
-      <div className='w-1/4'>
+      <div className='w-1/4 mt-[55px]'>
         <h3 className='p-[10px] font-semibold text-white bg-[#362F4B]'>Favorite List</h3>
         {console.log(fav.length)}
         {fav.length > 0 ? fav.map((fav) => (
